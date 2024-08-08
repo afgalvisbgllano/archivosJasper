@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.0.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="consolidado" pageWidth="528" pageHeight="10842" columnWidth="100" leftMargin="20" rightMargin="0" topMargin="20" bottomMargin="0" uuid="f8fcb0a7-9919-4f9c-95ab-cbfcf7bbfaf7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="80"/>
+	<parameter name="PR_STR_FECHA_INI" class="java.lang.String"/>
+	<parameter name="PR_STR_FECHA_FIN" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select dd.dsus_pcodigo ,ff.fac_numero ,
+(select sum(fx.fac_sdoreal) from public.fac_factura fx         
+        where fx.dsus_ideregistr = ff.dsus_ideregistr and 
+        fx.fac_ideregistro not in (select fg.fac_ideregistro from aseo.fmg_facturacioncarterag fg)
+        and fx.fac_estado not in  ('E','G') group by fx.dsus_ideregistr),'ASEO',max(ff.fac_fecvence)
+from public.fac_factura ff 
+inner join public.dsus_detsuscrip dd on dd.dsus_ideregistr = ff.dsus_ideregistr 
+inner join public.sus_suscripcion ss on ss.sus_ideregistro = ff.sus_ideregistro 
+and ss.cnre_ideregistr = 3
+inner join public.tido_tipdocumen tt on tt.uni_tipdocument = ff.uni_tipdocument 
+and tt.tido_estado = 'A'
+--inner join public.dicn_disconven dc on dc.cnre_ideregistr = ss.cnre_ideregistr 
+--and dc.emp_ideregistro = ff.emp_ideregistro 
+where ff.emp_ideregistro = 317 and ff.fac_estado not in ('E','G') and ff.uni_documento = 24
+and ff.fac_fecha between $P{PR_STR_FECHA_INI}::date   and  $P{PR_STR_FECHA_FIN}::date and ff.fac_sdoreal > 0
+group by dd.dsus_pcodigo , ff.fac_numero ,ff.dsus_ideregistr
+
+union all
+
+select dd.dsus_pcodigo ,ff.fac_numero ,max(saldo.sal),
+        'CARTERA G',max(ff.fac_fecvence)
+        
+from public.fac_factura ff  
+inner join public.dsus_detsuscrip dd on dd.dsus_ideregistr = ff.dsus_ideregistr 
+inner join public.sus_suscripcion ss on ss.sus_ideregistro = ff.sus_ideregistro
+and ss.cnre_ideregistr != 3
+inner join public.tido_tipdocumen tt on tt.uni_tipdocument = ff.uni_tipdocument 
+and tt.tido_estado = 'A'
+inner join lateral (select sum(fx.fac_sdoreal)sal from public.fac_factura fx 
+        where fx.dsus_ideregistr = ff.dsus_ideregistr 
+        and fx.fac_ideregistro in (select fg.fac_ideregistro from aseo.fmg_facturacioncarterag fg where fg.facmarc_estado = 'A')
+        and fx.fac_estado not in  ('E','G') group by fx.dsus_ideregistr) saldo on true
+where ff.emp_ideregistro = 317 and ff.fac_estado not in ('E','G') and ff.uni_documento = 24
+and ff.fac_fecha between  $P{PR_STR_FECHA_INI}::date and  $P{PR_STR_FECHA_FIN}::date  --and ff.dsus_ideregistr = 369387
+and ff.fac_sdoreal > 0 
+group by dd.dsus_pcodigo , ff.fac_numero ,ff.dsus_ideregistr;]]>
+	</queryString>
+	<field name="dsus_pcodigo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dsus_pcodigo"/>
+	</field>
+	<field name="fac_numero" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="fac_numero"/>
+	</field>
+	<field name="sum" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="sum"/>
+	</field>
+	<field name="?column?" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="?column?"/>
+	</field>
+	<field name="max" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="max"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="0" width="96" height="30" uuid="e22b117e-c787-49ce-9d2e-99af2e7dd5fa"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Numero Factura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-20" y="0" width="120" height="30" uuid="950b9230-25ef-41a2-abe9-19a63ba436c3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="316" y="0" width="96" height="30" uuid="b8df94e7-ccc8-41d8-bfad-ee7e989e9657"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="196" y="0" width="120" height="30" uuid="56219a96-b2f4-4d3b-a32b-add04d20bd6d"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Factura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="412" y="0" width="96" height="30" uuid="d883c3a7-71d0-4967-8344-57d2e8ebc3d4"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Vencimiento]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField pattern="#,##0.###;#,##0.###-">
+				<reportElement x="100" y="0" width="96" height="21" uuid="c443399d-6fed-484a-a0a5-018892137ac6"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fac_numero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="0" width="120" height="21" uuid="19f09868-7d13-41d1-ad7a-0d00220a3810"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dsus_pcodigo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###;#,##0.###-">
+				<reportElement x="316" y="0" width="96" height="21" uuid="f77182f0-aa03-4761-a9eb-7b35f288d461"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{?column?}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="196" y="0" width="120" height="21" uuid="88ace8d5-2f73-4e74-8e29-8e0f7ddd0e0a"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{sum}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###;#,##0.###-">
+				<reportElement x="412" y="0" width="96" height="21" uuid="008ce1e1-291e-4ca3-9c2d-aeb85e45f8c7"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format($F{max})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
