@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.0.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NUEVOS USUARIOS POR BARRIO" pageWidth="595" pageHeight="842" sectionType="Part" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30" uuid="d2716064-8ae4-40cf-a575-33afba400e3a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="80"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="true"/>
+	<property name="com.jaspersoft.studio.book.group.cover.header" value="Cover and Table of Contents"/>
+	<property name="com.jaspersoft.studio.book.group.cover.footer" value="Backcover"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="PR_STR_FECHA_INI" class="java.lang.String"/>
+	<parameter name="PR_STR_FECHA_FIN" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select b.barrio_nom , count(dd.dsus_pcodigo) from public.dsus_detsuscrip dd 
+inner join public.barrios b on b.barrio_ideregistro = dd.uni_barrio 
+where dd.emp_ideregistro = 317 and dd.dsus_estado = 'A'
+and dd.dsus_fecinicio between  $P{PR_STR_FECHA_INI}::date  and  $P{PR_STR_FECHA_FIN}::date  group by(b.barrio_nom);]]>
+	</queryString>
+	<field name="barrio_nom" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="barrio_nom"/>
+		<property name="com.jaspersoft.studio.field.label" value="barrio_nom"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="barrios"/>
+	</field>
+	<field name="count" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="count"/>
+		<property name="com.jaspersoft.studio.field.label" value="count"/>
+	</field>
+	<group name="cover">
+		<groupHeader>
+			<part uuid="2ed9de37-b3bf-4e3a-b920-8e5a63a4b486">
+				<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+					<subreportParameter name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="PR_STR_FECHA_INI">
+						<subreportParameterExpression><![CDATA[$P{PR_STR_FECHA_INI}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="PR_STR_FECHA_FIN">
+						<subreportParameterExpression><![CDATA[$P{PR_STR_FECHA_FIN}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["/var/www/html/ReportesAchagua/nuevoUsuarioBarrio/detallado.jasper"]]></subreportExpression>
+				</p:subreportPart>
+			</part>
+			<part uuid="d10cf8ba-c944-4b5e-905c-fc3c032508a0">
+				<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+					<subreportParameter name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="PR_STR_FECHA_INI">
+						<subreportParameterExpression><![CDATA[$P{PR_STR_FECHA_INI}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="PR_STR_FECHA_FIN">
+						<subreportParameterExpression><![CDATA[$P{PR_STR_FECHA_FIN}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["/var/www/html/ReportesAchagua/nuevoUsuarioBarrio/consolidado.jasper"]]></subreportExpression>
+				</p:subreportPart>
+			</part>
+		</groupHeader>
+	</group>
+</jasperReport>
