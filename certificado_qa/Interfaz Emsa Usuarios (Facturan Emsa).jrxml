@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.0.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="interfaz" pageWidth="612" pageHeight="1008" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d749c20c-e5be-4d92-ad96-44ba8d0c2319">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="80"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="net.sf.jasperreports.export.text.page.width" value="80"/>
+	<property name="net.sf.jasperreports.export.text.page.height" value="40"/>
+	<property name="net.sf.jasperreports.export.text.page.per.sheet" value="true"/>
+	<property name="net.sf.jasperreports.export.xlsx.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xlsx.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xlsx.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.collapse.row.span" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
+	<property name="net.sf.jasperreports.export.xlsx.collapse.row.span" value="true"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="211"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="782"/>
+	<property name="com.jaspersoft.studio.report.description" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="PR_STR_FECHA_INI" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="PR_STR_FECHA_FIN" class="java.lang.String" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[select dd.dsus_pcodigo,ds.dsus_pcodigo  from public.dsus_detsuscrip dd 
+inner join public.dsus_detsuscrip ds on ds.sus_ideregistro = dd.sus_ideregistro
+and ds.emp_ideregistro <> dd.emp_ideregistro and ds.dsus_estado = 'A'
+where dd.emp_ideregistro = 299;]]>
+	</queryString>
+	<field name="dsus_pcodigo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dsus_pcodigo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dsus_detsuscrip"/>
+	</field>
+	<field name="COLUMN_2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dsus_pcodigo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dsus_detsuscrip"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="0" width="120" height="20" uuid="16b377cd-278a-4bd5-8f5b-c7f69768f042"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO EMSA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="0" width="120" height="20" uuid="327522d9-6292-41c1-876d-ae0e9fe8316f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO ASEO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<property name="net.sf.jasperreports.band.split.type" value="Stretch"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="10" y="0" width="120" height="20" isRemoveLineWhenBlank="true" uuid="53271d69-19db-4b34-beae-a1bbcc83262d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dsus_pcodigo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="130" y="0" width="120" height="20" isRemoveLineWhenBlank="true" uuid="13e17c9d-cc50-4d2f-99b4-e3dda39fef64"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{COLUMN_2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
